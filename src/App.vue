@@ -25,7 +25,12 @@ onMounted(() => {
       type: 'section',
     });
     item.list.forEach((ele, eleIndex) => {
-      dataList.value.push({ title: `<p class='gap'></p>`+ele.tigan, type: 'tigan' });
+      const template = document.createElement('template');
+      template.innerHTML = ele.tigan;
+      const p =
+        template.content.querySelector('p') || document.createElement('p');
+      p.textContent = eleIndex + 1 + '.' + (p.textContent ?? '');
+      dataList.value.push({ title: template.innerHTML, type: 'tigan' });
       if (ele.option.length > 0) {
         const column = ele.option.some((opt) => opt.name.length > 9);
         const single = ele.option.some((opt) => opt.name.length <= 4);
@@ -43,11 +48,10 @@ onMounted(() => {
           });
         } else {
           dataList.value.push({
-            data1: ele.option.slice(0,2),
-            data2: ele.option.slice(2,4),
+            data1: ele.option.slice(0, 2),
+            data2: ele.option.slice(2, 4),
             type: 'option3',
           });
-          
         }
       }
     });
@@ -66,8 +70,7 @@ onMounted(() => {
         height = item.clientHeight;
       }
       obj[num].push(item);
-      console.log(item, item.clientHeight);
-      
+      // console.log(item, item.clientHeight);
     });
     pageNum.value = Math.round(Object.values(obj).length / column);
     for (let i = 1; i <= pageNum.value; i += 1) {
@@ -139,43 +142,30 @@ const download = async () => {
             </div>
           </template>
           <template v-if="item.type === 'tigan'">
-            <div class="tigan quiz-item" v-html="item.title">
-            </div>
+            <div class="tigan quiz-item" v-html="item.title"></div>
           </template>
           <template v-if="item.type === 'option1'">
             <div class="quiz-item">
               <p>{{ item.title }}</p>
             </div>
           </template>
-          <div
-            v-if="item.type === 'option2'"
-            class="quiz-item"
-          >
-            <p
-            style="display: flex; justify-content: space-between"
-            >
-            <div v-for="(ele, eleIndex) in item.data"
-              :key="eleIndex">{{ ele.value }}. {{ ele.name }}</div>
-              
+          <div v-if="item.type === 'option2'" class="quiz-item">
+            <p style="display: flex; justify-content: space-between">
+              <span v-for="(ele, eleIndex) in item.data" :key="eleIndex">
+                {{ ele.value }}. {{ ele.name }}
+              </span>
             </p>
           </div>
-          <div
-            v-if="item.type === 'option3'"
-            class="quiz-item"
-          >
-            <p
-            style="display: flex; justify-content: space-between"
-            >
-            <div v-for="(ele, eleIndex) in item.data1"
-              :key="eleIndex">{{ ele.value }}. {{ ele.name }}</div>
-              
+          <div v-if="item.type === 'option3'" class="quiz-item">
+            <p style="display: flex; justify-content: space-between">
+              <span v-for="(ele, eleIndex) in item.data1" :key="eleIndex"
+                >{{ ele.value }}. {{ ele.name }}</span
+              >
             </p>
-            <p
-            style="display: flex; justify-content: space-between"
-            >
-            <div v-for="(ele, eleIndex) in item.data2"
-              :key="eleIndex">{{ ele.value }}. {{ ele.name }}</div>
-              
+            <p style="display: flex; justify-content: space-between">
+              <span v-for="(ele, eleIndex) in item.data2" :key="eleIndex"
+                >{{ ele.value }}. {{ ele.name }}</span
+              >
             </p>
           </div>
         </div>
@@ -209,22 +199,25 @@ const download = async () => {
   padding: 15mm;
   border: 1px solid #000;
 }
-.content{
+.content {
   counter-reset: section;
 }
 :deep(.tigan img) {
   width: 600px !important;
   height: auto !important;
 }
-:deep(.title-inline > p) {
-  display: inline;
-}
-:deep(.gap) {
+:deep(.tigan) > p:first-child {
   padding-top: 20px;
-  display: inline-block;
 }
-:deep(.gap + p):before{
-  counter-increment: section;
-  content: counter(section) '.';
-}
+// :deep(.title-inline > p) {
+//   display: inline;
+// }
+// :deep(.gap) {
+//   padding-top: 20px;
+//   display: inline-block;
+// }
+// :deep(.gap + p):before {
+//   counter-increment: section;
+//   content: counter(section) '.';
+// }
 </style>
