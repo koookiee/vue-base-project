@@ -9,8 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^5.1.1",
+    "@wiris/mathtype-tinymce6": "^8.9.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
+    "tinymce": "^6.8.3",
     "vue": "^3.4.21"
   },
   "devDependencies": {
